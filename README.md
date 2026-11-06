@@ -4,6 +4,10 @@ A native macOS menu bar app for developers. It shows your AI usage limits and di
 
 Built with SwiftUI and Apple frameworks only, with no third-party dependencies.
 
+![Tweaksec running](screenshot.jpg)
+
+*Tweaksec running.*
+
 ## Features
 
 **AI usage.** Choose one source at a time in Settings → AI Usage:
