@@ -1,0 +1,66 @@
+name: Tweaksec
+options:
+  bundleIdPrefix: net.bluekeisoft
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: VUTD52J473 # BLUEKEI
+targets:
+  Tweaksec:
+    type: application
+    platform: macOS
+    sources:
+      - Tweaksec
+    info:
+      path: Tweaksec/Resources/Info.plist
+      properties:
+        CFBundleDisplayName: Tweaksec
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        LSUIElement: true
+        LSApplicationCategoryType: public.app-category.developer-tools
+        NSHumanReadableCopyright: "Copyright © 2026 BLUEKEI SOFT. Released under the MIT License."
+        ITSAppUsesNonExemptEncryption: false
+    entitlements:
+      path: Tweaksec/Resources/Tweaksec.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
+        com.apple.security.files.user-selected.read-write: true
+        com.apple.security.files.bookmarks.app-scope: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: net.bluekeisoft.tweaksec
+        ENABLE_APP_SANDBOX: YES
+        ENABLE_HARDENED_RUNTIME: YES
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "Apple Development"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        GENERATE_INFOPLIST_FILE: NO
+  TweaksecTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - TweaksecTests
+    dependencies:
+      - target: Tweaksec
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: net.bluekeisoft.tweaksec.tests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/Tweaksec.app/Contents/MacOS/Tweaksec"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+schemes:
+  Tweaksec:
+    build:
+      targets:
+        Tweaksec: all
+        TweaksecTests: [test]
+    test:
+      targets:
+        - TweaksecTests
