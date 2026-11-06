@@ -1,7 +1,14 @@
 import SwiftUI
 
+final class AppDelegate: NSObject, NSApplicationDelegate {
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        MenuBarPanel.shared.install()
+    }
+}
+
 @main
 struct TweaksecApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @State private var settings: AppSettings
     @State private var usageStore: UsageStore
     @State private var diskStore: DiskStore
@@ -12,26 +19,25 @@ struct TweaksecApp: App {
         _ = HomeAccess.shared
         let settings = AppSettings()
         _settings = State(initialValue: settings)
-        _usageStore = State(initialValue: UsageStore(settings: settings))
-        _diskStore = State(initialValue: DiskStore(settings: settings))
-        _cacheStore = State(initialValue: CacheStore(settings: settings))
+        let usageStore = UsageStore(settings: settings)
+        let diskStore = DiskStore(settings: settings)
+        let cacheStore = CacheStore(settings: settings)
+        _usageStore = State(initialValue: usageStore)
+        _diskStore = State(initialValue: diskStore)
+        _cacheStore = State(initialValue: cacheStore)
         NotificationService.shared.requestAuthorization()
-        HotKeyService.shared.onPress = { MenuBarPanel.toggle() }
-        HotKeyService.shared.hotKey = settings.showMenuHotKey
-    }
-
-    var body: some Scene {
-        MenuBarExtra {
+        MenuBarPanel.shared.content = AnyView(
             MenuContentView()
                 .environment(settings)
                 .environment(usageStore)
                 .environment(diskStore)
                 .environment(cacheStore)
-        } label: {
-            Image(systemName: "slider.horizontal.3")
-        }
-        .menuBarExtraStyle(.window)
+        )
+        HotKeyService.shared.onPress = { MenuBarPanel.shared.toggle() }
+        HotKeyService.shared.hotKey = settings.showMenuHotKey
+    }
 
+    var body: some Scene {
         Settings {
             SettingsView()
                 .environment(settings)
